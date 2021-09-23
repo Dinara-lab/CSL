@@ -2,7 +2,10 @@ package sample;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -11,18 +14,20 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-
-
 public class Controller implements Initializable {
 
     String jsonContent;
     FileChooser fileChooser = new FileChooser();
+
     @FXML
     private TextArea textArea;
     @FXML
     private TextArea textAreaP;
     @FXML
     private TextArea textAreaS;
+
+    public Controller() throws FileNotFoundException {
+    }
 
     @FXML
     void importFile(MouseEvent event) throws FileNotFoundException {
@@ -44,8 +49,6 @@ public class Controller implements Initializable {
     String jsonOutput = gson.toJson(jsonContent);
     System.out.println(jsonOutput);
     textAreaP.appendText("File parsed successfully !");
-
-
     }
 
     @FXML
@@ -68,4 +71,17 @@ public class Controller implements Initializable {
         fileChooser.setInitialDirectory(new File("/Users/buciladinara/Desktop/audit/SecurityPoliciesProject/src/sample"));
     }
 
+    @FXML
+    void openKeyWindow(MouseEvent event) throws IOException {
+      try{
+          FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/keyWindow.fxml"));
+          Parent root1 = fxmlLoader.load();
+          Stage stage = new Stage();
+          stage.setScene(new Scene(root1));
+          stage.show();
+
+      }catch (Exception e){
+          System.out.println("Can not load the window");
+      }
+    }
 }

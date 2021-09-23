@@ -53,8 +53,8 @@ public class AppliactionServices {
                 hashMap.put(array[0],array[1]);
 
             else {
-                if (hashMap.containsKey("reg_item")){
-                    finalHashMap.put(hashMap.get("reg_item"),hashMap); }
+                if (hashMap.containsKey("description")){
+                    finalHashMap.put(hashMap.get("description"),hashMap); }
                 hashMap = new HashMap<>();
                 hashMap.put(array[0],array[1]);
             }

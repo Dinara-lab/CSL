@@ -32,6 +32,7 @@
             <Button layoutX="543.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#saveFile" prefHeight="35.0" prefWidth="73.0" text="Save" />
             <TextArea fx:id="textAreaP" layoutY="92.0" prefHeight="41.0" prefWidth="617.0" />
             <TextArea fx:id="textAreaS" layoutY="158.0" prefHeight="41.0" prefWidth="617.0" />
+            <Button layoutX="381.0" layoutY="224.0" mnemonicParsing="false" onMouseClicked="#openKeyWindow" prefHeight="35.0" prefWidth="119.0" text="Visualize keys" />
          </children>
          <effect>
             <ColorAdjust brightness="-0.41" contrast="0.12" hue="-0.05" saturation="-1.0" />
