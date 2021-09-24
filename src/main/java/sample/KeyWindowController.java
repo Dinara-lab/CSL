@@ -96,6 +96,7 @@ public class KeyWindowController implements Initializable {
                 }else return false;
             });
         });
+
         SortedList<Data> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedData);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -23,5 +24,6 @@
         </columns>
       </TableView>
       <TextField fx:id="textField" layoutX="211.0" layoutY="28.0" prefHeight="26.0" prefWidth="505.0" />
+      <Label layoutX="115.0" layoutY="33.0" prefHeight="17.0" prefWidth="96.0" text="Search Bar" />
    </children>
 </AnchorPane>
