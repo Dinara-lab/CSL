@@ -66,7 +66,9 @@ public class KeyWindowController implements Initializable {
     }
     @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
-            ObservableList<Data> list = FXCollections.observableArrayList( Data.getTheList(data,map));
+
+        ObservableList<Data> list = FXCollections.observableArrayList(Data.getTheList(data,map));
+
             reference.setCellValueFactory(new PropertyValueFactory<>("reference"));
             value_type.setCellValueFactory(new PropertyValueFactory<>("value_type"));
             solution.setCellValueFactory(new PropertyValueFactory<>("solution"));
@@ -80,22 +82,25 @@ public class KeyWindowController implements Initializable {
             info.setCellValueFactory(new PropertyValueFactory<>("info"));
             table.setItems(list);
 
+
         FilteredList<Data> filteredData = new FilteredList<>(list,b->true);
         textField.textProperty().addListener((observable, oldValue, newValue) ->{
             filteredData.setPredicate(ob ->{
-                if(newValue.isEmpty()||newValue==null||newValue.isBlank()){
+                if(newValue.isEmpty() || newValue.isBlank()){
                     return true;
                 }
                 String searchKeyWord = newValue.toLowerCase();
-                if(ob.getType().toLowerCase().contains(searchKeyWord)){
+
+                if(ob.getDescription().toLowerCase().contains(searchKeyWord)){
                     return true;
                 }else return false;
-
             });
         });
         SortedList<Data> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedData);
+
+       
 
     }
 }
