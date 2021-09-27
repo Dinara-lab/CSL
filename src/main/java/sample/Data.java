@@ -1,4 +1,6 @@
 package sample;
+import javafx.scene.control.CheckBox;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class Data{
     private String type;
     private String see_also;
     private String info;
-
+    private CheckBox checkBox;
 
     public String getReference() {
         return reference;
@@ -60,6 +62,14 @@ public class Data{
 
     public String getInfo() {
         return info;
+    }
+
+    public CheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(CheckBox checkBox) {
+        this.checkBox = checkBox;
     }
 
     public void setReference(String reference) {
@@ -120,6 +130,7 @@ public class Data{
 
 
     public static ArrayList<Data> getTheList(Data data, Map<String, HashMap> map) {
+        CheckBox checkBox = new CheckBox();
         Set keys = map.keySet();
         ArrayList<Data> objects = new ArrayList<>();
         for(Object key : keys) {
@@ -149,11 +160,11 @@ public class Data{
                 } else if (key1.equals("info")) {
                     data.setInfo(object.get("info"));
                 }
+                data.setCheckBox(checkBox);
+                checkBox = new CheckBox();
             }
             objects.add(data);
             data = new Data();
-
-
         }
         return objects;
     }
