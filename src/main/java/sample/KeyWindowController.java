@@ -161,7 +161,7 @@ public class KeyWindowController implements Initializable {
             jsonObjects.add(json);
         }
 
-        File fout = new File("Data2.txt");
+        File fout = new File("fileN.json");
         try (FileOutputStream fos = new FileOutputStream(fout); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));) {
             for (String s : jsonObjects) {
                 bw.write(s);
