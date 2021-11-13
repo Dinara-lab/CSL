@@ -15,9 +15,9 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-public class KeyWindowController implements Initializable {
+public class KeyWindowController implements Initializable{
 
-    String path = "/Users/buciladinara/Desktop/audit/SecurityPoliciesProject/src/sample/file.json";
+    String path = "C:\\Users\\bddin\\Desktop\\CSL-main\\src\\sample\\filecorrect.json";
     BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
     Gson gson = new Gson();
     HashMap<String, HashMap> json = gson.fromJson(bufferedReader, HashMap.class);
@@ -70,27 +70,30 @@ public class KeyWindowController implements Initializable {
 
     @FXML
     private Button saveButton;
+    @FXML
+    private Button compareButton;
+
 
     public KeyWindowController() throws IOException {
     }
     @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
         ObservableList<Data> list = FXCollections.observableArrayList(Data.getTheList(data,map));
 
-            reference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-            value_type.setCellValueFactory(new PropertyValueFactory<>("value_type"));
-            solution.setCellValueFactory(new PropertyValueFactory<>("solution"));
-            reg_item.setCellValueFactory(new PropertyValueFactory<>("reg_item"));
-            reg_option.setCellValueFactory(new PropertyValueFactory<>("reg_option"));
-            description.setCellValueFactory(new PropertyValueFactory<>("description"));
-            value_data.setCellValueFactory(new PropertyValueFactory<>("value_data"));
-            reg_key.setCellValueFactory(new PropertyValueFactory<>("reg_key"));
-            type.setCellValueFactory(new PropertyValueFactory<>("type"));
-            see_also.setCellValueFactory(new PropertyValueFactory<>("see_also"));
-            info.setCellValueFactory(new PropertyValueFactory<>("info"));
-            select.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
-            table.setItems(list);
+        reference.setCellValueFactory(new PropertyValueFactory<>("reference"));
+        value_type.setCellValueFactory(new PropertyValueFactory<>("value_type"));
+        solution.setCellValueFactory(new PropertyValueFactory<>("solution"));
+        reg_item.setCellValueFactory(new PropertyValueFactory<>("reg_item"));
+        reg_option.setCellValueFactory(new PropertyValueFactory<>("reg_option"));
+        description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        value_data.setCellValueFactory(new PropertyValueFactory<>("value_data"));
+        reg_key.setCellValueFactory(new PropertyValueFactory<>("reg_key"));
+        type.setCellValueFactory(new PropertyValueFactory<>("type"));
+        see_also.setCellValueFactory(new PropertyValueFactory<>("see_also"));
+        info.setCellValueFactory(new PropertyValueFactory<>("info"));
+        select.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        table.setItems(list);
 
 
         FilteredList<Data> filteredData = new FilteredList<>(list,b->true);
@@ -125,7 +128,7 @@ public class KeyWindowController implements Initializable {
     }
 
     @FXML
-    void saveOptions(ActionEvent event) {
+    void saveOptions(ActionEvent event) throws IOException, InterruptedException {
         ObservableList<Data> itemToSave = FXCollections.observableArrayList();
         ObservableList<Data> items = table.getItems();
         HashMap<String, String> map= new HashMap<>();
@@ -133,8 +136,14 @@ public class KeyWindowController implements Initializable {
         ArrayList<String> jsonObjects = new ArrayList<>();
         ArrayList<HashMap<String, String>> listOfObjects = new ArrayList<>();
         for (Data item:items) {
-            if(item.getCheckBox().isSelected()){
+            if(item.getCheckBox().isSelected()) {
                 itemToSave.add(item);
+                if (item.getValue_data().equals(null)){
+                    System.out.println("null item");
+                }
+                else{
+                    KeyWindowController.comparePolicies(item);
+                }
             }
         }
 
@@ -152,7 +161,7 @@ public class KeyWindowController implements Initializable {
             map.put("info", item.getInfo());
 
             listOfObjects.add(map);
-            map= new HashMap<>();
+            map = new HashMap<>();
         }
 
         for (HashMap obj: listOfObjects) {
@@ -171,5 +180,82 @@ public class KeyWindowController implements Initializable {
 
         }
     }
+
+    public static boolean comparePolicies(Data item) throws IOException, InterruptedException {
+
+        boolean flag = false;
+
+        if(item.getReg_key()==null || item.getReg_item()==null){}
+        else
+        {
+            String command = WinRegistry.showAllValues(item.getReg_key(), item.getReg_item());
+            command = command.strip();
+
+            int i;
+            ArrayList<Character> name_ch = new ArrayList<>();
+            for (i = 0; i < command.length(); i++) {
+                if (command.charAt(i) != ' '){
+                    name_ch.add(command.charAt(i));
+                }
+                else{
+                    break;
+                }
+            }
+            String name = "";
+            for (Character c : name_ch) {
+                name += c;
+            }
+
+            command = command.replace(name, "");
+            command = command.strip();
+
+            ArrayList<Character> type_ch = new ArrayList<>();
+            for (i = 0; i < command.length(); i++) {
+                if (command.charAt(i) != ' '){
+                    type_ch.add(command.charAt(i));
+                }
+                else{
+                    break;
+                }
+            }
+            String type = "";
+            for (Character c : type_ch){
+                type += c;
+            }
+
+            command = command.replace(type, "");
+            String value = command.strip();
+
+            if(item.getValue_data().equals(value)){}
+            else{
+                flag = true;
+                System.out.println("Test Passed: " + value + " " + item.getReg_key());
+            }
+        }
+
+        return flag;
+    }
+
+    @FXML
+    void compareOptions() {
+        table.setRowFactory(tv -> new TableRow<>() {
+            @Override
+            protected void updateItem(Data item, boolean empty) {
+                super.updateItem(item, empty);
+                try {
+                    if(item.getCheckBox().isSelected() && KeyWindowController.comparePolicies(item))
+                    {setStyle("-fx-background-color: green;");}
+                    else if(item.getCheckBox().isSelected() &&  !KeyWindowController.comparePolicies(item)){
+                        setStyle("-fx-background-color: #ffd7d1;");
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+
 }
 

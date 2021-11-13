@@ -29,7 +29,7 @@ public class AppliactionServices {
         List<String> mappedList = new ArrayList<String>();
         for (String expression:list
         ) {
-            mappedList.add(expression.replace(" ", ""));
+            mappedList.add(expression.replace(" ", " "));
         }
         return mappedList;
 

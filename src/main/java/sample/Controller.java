@@ -31,24 +31,24 @@ public class Controller implements Initializable {
 
     @FXML
     void importFile(MouseEvent event) throws FileNotFoundException {
-     File file = fileChooser.showOpenDialog(new Stage());
-     textArea.appendText(file.getAbsolutePath());
+        File file = fileChooser.showOpenDialog(new Stage());
+        textArea.appendText(file.getAbsolutePath());
 
     }
     @FXML
     void parseFile(MouseEvent event) throws FileNotFoundException {
-    String path = textArea.getText();
-    FileInputStream fileInputStream = new FileInputStream(path);
-    List<String> list = AppliactionServices.listConvetion(fileInputStream);
-    List<String> parsedList = AppliactionServices.parselist(list);
-    List<String[]>convertedList = AppliactionServices.convertToStringArray(parsedList);
-    HashMap<String, HashMap> parsedFile = AppliactionServices.convertToHashMapAndParse(convertedList);
-    Map<String, HashMap> map = parsedFile;
-    jsonContent = AppliactionServices.convertToJson(map);
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    String jsonOutput = gson.toJson(jsonContent);
-    System.out.println(jsonOutput);
-    textAreaP.appendText("File parsed successfully !");
+        String path = textArea.getText();
+        FileInputStream fileInputStream = new FileInputStream(path);
+        List<String> list = AppliactionServices.listConvetion(fileInputStream);
+        List<String> parsedList = AppliactionServices.parselist(list);
+        List<String[]>convertedList = AppliactionServices.convertToStringArray(parsedList);
+        HashMap<String, HashMap> parsedFile = AppliactionServices.convertToHashMapAndParse(convertedList);
+        Map<String, HashMap> map = parsedFile;
+        jsonContent = AppliactionServices.convertToJson(map);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonOutput = gson.toJson(jsonContent);
+        System.out.println(jsonOutput);
+        textAreaP.appendText("File parsed successfully !");
     }
 
     @FXML
@@ -68,20 +68,23 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        fileChooser.setInitialDirectory(new File("/Users/buciladinara/Desktop/audit/SecurityPoliciesProject/src/sample"));
+        fileChooser.setInitialDirectory(new File("C:\\Users\\bddin\\Desktop\\CSL-main\\src\\sample"));
     }
 
     @FXML
     void openKeyWindow(MouseEvent event) throws IOException {
-      try{
-          FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/keyWindow.fxml"));
-          Parent root1 = fxmlLoader.load();
-          Stage stage = new Stage();
-          stage.setScene(new Scene(root1));
-          stage.show();
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/keyWindow.fxml"));
+            Parent root1 = fxmlLoader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root1,1200,900);
+            stage.setScene(scene);
+            stage.show();
 
-      }catch (Exception e){
-          System.out.println("Can not load the window");
-      }
+
+
+        }catch (Exception e){
+            System.out.println("Can not load the window");
+        }
     }
 }
