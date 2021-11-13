@@ -2,8 +2,6 @@
 
 ## Course: Cryptography and Security
 
-## Laboratory Work Nr.1 - 3
-
 ### Author: Bucila Dinara, Gherman Artiom FAF-193
 
 ### Description:
