@@ -6,9 +6,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 import java.io.*;
@@ -16,7 +21,7 @@ import java.net.URL;
 import java.util.*;
 
 public class KeyWindowController implements Initializable{
-
+    Array ar = new Array();
     String path = "C:\\Users\\bddin\\Desktop\\CSL-main\\src\\sample\\filecorrect.json";
     BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
     Gson gson = new Gson();
@@ -26,6 +31,9 @@ public class KeyWindowController implements Initializable{
 
     @FXML
     private TableView<Data> table;
+
+    @FXML
+    private TableColumn<String, String> failed_policies;
 
     @FXML
     private TableColumn<Data, String> reference;
@@ -73,6 +81,21 @@ public class KeyWindowController implements Initializable{
     @FXML
     private Button compareButton;
 
+    @FXML
+    private Button enforce;
+
+    @FXML
+    private Button back;
+
+    @FXML
+    private Label LabelText;
+
+    @FXML
+    private Label Lable22;
+
+    @FXML
+    private Label Label23;
+
 
     public KeyWindowController() throws IOException {
     }
@@ -93,6 +116,7 @@ public class KeyWindowController implements Initializable{
         see_also.setCellValueFactory(new PropertyValueFactory<>("see_also"));
         info.setCellValueFactory(new PropertyValueFactory<>("info"));
         select.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+        failed_policies.setCellValueFactory(new PropertyValueFactory<>("checkBox1"));
         table.setItems(list);
 
 
@@ -229,7 +253,7 @@ public class KeyWindowController implements Initializable{
             if(item.getValue_data().equals(value)){}
             else{
                 flag = true;
-                System.out.println("Test Passed: " + value + " " + item.getReg_key());
+                //System.out.println("Test Passed: " + value + " " + item.getReg_key());
             }
         }
 
@@ -237,25 +261,87 @@ public class KeyWindowController implements Initializable{
     }
 
     @FXML
-    void compareOptions() {
-        table.setRowFactory(tv -> new TableRow<>() {
-            @Override
-            protected void updateItem(Data item, boolean empty) {
-                super.updateItem(item, empty);
-                try {
-                    if(item.getCheckBox().isSelected() && KeyWindowController.comparePolicies(item))
-                    {setStyle("-fx-background-color: green;");}
-                    else if(item.getCheckBox().isSelected() &&  !KeyWindowController.comparePolicies(item)){
-                        setStyle("-fx-background-color: #ffd7d1;");
-                    }
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+    void compareOptions() throws IOException, InterruptedException {
+        LabelText.setText("Policies compared successfully!");
+
+        ObservableList<Data> items = table.getItems();
+        for(Data item : items){
+            if (item.getCheckBox().isSelected()){
+                if (!KeyWindowController.comparePolicies(item)){
+                    item.getCheckBox1().setSelected(true);
                 }
             }
-        });
+        }
 
     }
 
+    @FXML
+    void back() throws IOException, InterruptedException {
+        Label23.setText("Rollback executed successfully!");
+        ObservableList<Data> list = ar.list;
+        for (Data item:table.getItems()){
+            KeyWindowController.comparePolicies(item);
+        }
+        for(Data item : list){
+            item.getCheckBox1().setSelected(true);
+        }
+    }
+
+    @FXML
+    void enforceOptions(ActionEvent event) throws IOException, InterruptedException {
+        Lable22.setText("Policies enforced successfully! ");
+        ObservableList<Data> itemToSave = FXCollections.observableArrayList();
+        HashMap<String, String> map = new HashMap<>();
+        Gson gson = new Gson();
+        ArrayList<String> jsonObjects = new ArrayList<>();
+        ArrayList<HashMap<String, String>> listOfObjects = new ArrayList<>();
+        for (Data item:table.getItems()){
+            KeyWindowController.comparePolicies(item);
+        }
+        for (Data item : table.getItems()) {
+            if (item.getCheckBox1().isSelected()) {
+                itemToSave.add(item);
+
+            }
+        }
+        for (Data item : itemToSave) {
+            map.put("reference", item.getReference());
+            map.put("value_type", item.getValue_type());
+            map.put("solution", item.getSolution());
+            map.put("reg_item", item.getReg_item());
+            map.put("reg_option", item.getReg_option());
+            map.put("description", item.getDescription());
+            map.put("value_data", item.getValue_data());
+            map.put("reg_key", item.getReg_key());
+            map.put("type", item.getType());
+            map.put("see_also", item.getSee_also());
+            map.put("info", item.getInfo());
+
+            listOfObjects.add(map);
+            map = new HashMap<>();
+        }
+
+        for (HashMap obj : listOfObjects) {
+            String json = gson.toJson(obj);
+            gson = new Gson();
+            jsonObjects.add(json);
+        }
+
+        File fout = new File("failed_policies.json");
+        try (FileOutputStream fos = new FileOutputStream(fout); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));) {
+            for (String s : jsonObjects) {
+                bw.write(s);
+                bw.newLine();
+            }
+        } catch (IOException ignored) {
+
+        }
+        for (Data item : itemToSave) {
+            KeyWindowController.comparePolicies(item);
+            item.getCheckBox1().setSelected(false);
+        }
+        ar.setList(itemToSave);
+    }
 
 }
 

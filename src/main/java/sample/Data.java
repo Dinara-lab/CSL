@@ -19,6 +19,8 @@ public class Data{
     private String see_also;
     private String info;
     private CheckBox checkBox;
+    private CheckBox checkBox1;
+
 
     public String getReference() {
         return reference;
@@ -68,8 +70,16 @@ public class Data{
         return checkBox;
     }
 
+    public CheckBox getCheckBox1() {
+        return checkBox1;
+    }
+
     public void setCheckBox(CheckBox checkBox) {
         this.checkBox = checkBox;
+    }
+
+    public void setCheckBox1(CheckBox checkBox1) {
+        this.checkBox1 = checkBox1;
     }
 
     public void setReference(String reference) {
@@ -116,6 +126,7 @@ public class Data{
         this.info = info;
     }
 
+
     @Override
     public String toString() {
         return "Data{" +
@@ -131,20 +142,25 @@ public class Data{
 
     public static ArrayList<Data> getTheList(Data data, Map<String, HashMap> map) {
         CheckBox checkBox = new CheckBox();
+        CheckBox checkBox1 = new CheckBox();
         Set keys = map.keySet();
         ArrayList<Data> objects = new ArrayList<>();
         for(Object key : keys) {
-           Map<String, String> object = map.get(key);
+            Map<String, String> object = map.get(key);
             Set<String> keys1 = object.keySet();
             for (Object key1 : keys1) {
                 if (key1.equals("reference")) {
+
                     data.setReference(object.get("reference"));
+
                 } else if (key1.equals("value_type")) {
                     data.setValue_type(object.get("value_type"));
+
                 } else if (key1.equals("solution")) {
                     data.setSolution(object.get("solution"));
                 } else if (key1.equals("reg_item")) {
                     data.setReg_item(object.get("reg_item"));
+
                 } else if (key1.equals("reg_option")) {
                     data.setReg_option(object.get("reg_option"));
                 } else if (key1.equals("description")) {
@@ -162,6 +178,9 @@ public class Data{
                 }
                 data.setCheckBox(checkBox);
                 checkBox = new CheckBox();
+
+                data.setCheckBox1(checkBox1);
+                checkBox1 = new CheckBox();
             }
             objects.add(data);
             data = new Data();
